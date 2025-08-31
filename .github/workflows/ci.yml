@@ -26,12 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Load .env file (non-sensitive vars, dev vars)
-      - name: Load .env
-        uses: crazy-max/ghaction-dotenv@v3
-        with:
-          path: .env
-
       # Set up Go
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -47,7 +41,7 @@ jobs:
           
       # Run migrations
       - name: Run migrations
-        run: migrate -path ./internal/db/migration -database "${POSTGRES_URL}" -verbose up
+        run: migrate -path ./internal/db/migration -database "postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
       # Run tests
       - name: Run tests
