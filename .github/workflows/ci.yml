@@ -40,9 +40,17 @@ jobs:
           sudo mv migrate /usr/local/bin/migrate
           which migrate
           
-      # Run migrations
       - name: Run migrations
-        run: migrate -path ./internal/db/migration -database "postgresql://postgres:secret@postgres:5432/simple_bank?sslmode=disable" -verbose up
+        run: |
+          # Wait for Postgres
+          for i in {1..30}; do
+            pg_isready -h postgres -U postgres && break
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+
+          migrate -path ./internal/db/migration -database "postgresql://postgres:secret@postgres:5432/simple_bank?sslmode=disable" -verbose up
+
 
       # Run tests
       - name: Run tests
