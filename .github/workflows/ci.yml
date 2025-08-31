@@ -18,12 +18,11 @@ jobs:
           POSTGRES_PASSWORD: secret
           POSTGRES_DB: simple_bank
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
+
     steps:
       - uses: actions/checkout@v4
 
@@ -39,18 +38,18 @@ jobs:
           curl -L https://github.com/golang-migrate/migrate/releases/download/v4.19.0/migrate.linux-amd64.tar.gz | tar xvz
           sudo mv migrate /usr/local/bin/migrate
           which migrate
-          
+
+      # Run migrations
       - name: Run migrations
+        env:
+          POSTGRES_HOST: ${{ job.services.postgres.host }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: simple_bank
         run: |
-          # Wait for Postgres
-          for i in {1..30}; do
-            pg_isready -h postgres -U postgres && break
-            echo "Waiting for Postgres..."
-            sleep 2
-          done
-
-          migrate -path ./internal/db/migration -database "postgresql://postgres:secret@postgres:5432/simple_bank?sslmode=disable" -verbose up
-
+          migrate -path ./internal/db/migration \
+            -database "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=disable" \
+            -verbose up
 
       # Run tests
       - name: Run tests
