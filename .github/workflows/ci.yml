@@ -41,7 +41,7 @@ jobs:
           
       # Run migrations
       - name: Run migrations
-        run: migrate -path ./internal/db/migration -database "postgresql://postgres:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
+        run: migrate -path ./internal/db/migration -database "postgresql://postgres:secret@postgres:5432/simple_bank?sslmode=disable" -verbose up
 
       # Run tests
       - name: Run tests
