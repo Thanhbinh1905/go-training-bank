@@ -42,3 +42,8 @@ tasks:
     desc: Run tests
     cmds:
       - go test -v -cover ./...
+
+  mock:
+    desc: Generate mock code
+    cmds:
+      - mockgen -destination internal/db/mock/store.go -package mockdb github.com/Thanhbinh1905/go-training-bank/internal/db/sqlc Store

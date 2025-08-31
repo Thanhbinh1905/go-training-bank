@@ -17,6 +17,8 @@ func NewServer(service service.Service) *Server {
 	router := gin.Default()
 
 	router.POST("/accounts", server.CreateAccount)
+	router.GET("/accounts/:id", server.GetAccount)
+	router.GET("/accounts", server.ListAccounts)
 
 	server.router = router
 	return server

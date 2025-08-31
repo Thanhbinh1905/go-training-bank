@@ -34,6 +34,10 @@ func RandomOwner() string {
 	return randomString(6)
 }
 
+func RandomID() int64 {
+	return randomInt(1, 1000)
+}
+
 func RandomMoney() int64 {
 	return randomInt(0, 1000)
 }
