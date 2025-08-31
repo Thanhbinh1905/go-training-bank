@@ -1,0 +1,23 @@
+version: "2"
+cloud:
+    organization: ""
+    project: ""
+    hostname: ""
+servers: []
+sql: 
+-   engine: "postgresql"
+    schema: "./internal/db/migration/"
+    queries: "./internal/db/query/"
+    gen:
+        go:
+            package: "db"
+            out: "./internal/db/sqlc"
+            sql_package: "pgx/v5"
+            emit_empty_slices: true
+            emit_prepared_queries: false
+            emit_interface: false
+            emit_json_tags: true
+            emit_exact_table_names: false
+plugins: []
+rules: []
+options: {}

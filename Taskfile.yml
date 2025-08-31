@@ -1,0 +1,44 @@
+version: '3'
+
+dotenv: ['.env']
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  db:create:
+    desc: Create new database
+    cmds:
+      - docker exec -it simple_bank_db createdb --username={{.POSTGRES_URL}} simple_bank
+
+  db:drop:
+    desc: Create new database
+    cmds:
+      - docker exec -it simple_bank_db dropdb --username={{.POSTGRES_URL}} simple_bank
+
+  db:migrate:
+    desc: Migrate database
+    cmds:
+      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose up
+  
+  db:rollback:
+    desc: Rollback database
+    cmds:
+      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose down
+  
+  db:psql:
+    desc: Open psql prompt
+    cmds:
+      - docker exec -it simple_bank_db psql -U {{.POSTGRES_URL}} -d simple_bank
+
+  sqlc:generate:
+    desc: Generate sqlc code
+    cmds:
+      - sqlc generate
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test -v -cover ./...
