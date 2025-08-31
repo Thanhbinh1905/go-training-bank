@@ -1,2 +1,0 @@
-{"level":"info","time":"2025-08-31T02:49:41.543Z","caller":"app/app.go:18","msg":"connected to db successfully","service":"go-training-bank","env":"","start_time":"2025-08-31T02:49:41.529Z"}
-{"level":"info","time":"2025-08-31T02:55:19.981Z","caller":"app/app.go:18","msg":"connected to db successfully","service":"go-training-bank","env":"","start_time":"2025-08-31T02:55:19.970Z"}
