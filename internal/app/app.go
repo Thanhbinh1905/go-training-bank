@@ -9,6 +9,7 @@ import (
 	"github.com/Thanhbinh1905/go-training-bank/internal/service"
 	"github.com/Thanhbinh1905/go-training-bank/pkg/connect"
 	"github.com/Thanhbinh1905/go-training-bank/pkg/logger"
+	"go.uber.org/zap"
 )
 
 func Run(cfg *config.Config) {
@@ -17,15 +18,18 @@ func Run(cfg *config.Config) {
 
 	pool, err := connect.Postgres(context.Background(), cfg.DatabaseURL, log)
 	if err != nil {
-		panic(err)
+		log.Panic("Cannot connect to DB", zap.Error(err))
 	}
 	defer pool.Close()
 
 	store := db.NewStore(pool)
 	service := service.NewService(store)
-	server := api.NewServer(service)
+	server, err := api.NewServer(*cfg, service)
+	if err != nil {
+		log.Panic("Failed to setup server", zap.Error(err))
+	}
 
 	if err := server.Start(":8080"); err != nil {
-		panic(err)
+		log.Panic("Cannot start server", zap.Error(err))
 	}
 }

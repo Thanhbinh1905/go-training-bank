@@ -1,33 +1,28 @@
 package config
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	DatabaseURL string
-	Production  bool
+	DatabaseURL         string        `mapstructure:"POSTGRES_URL"`
+	Production          bool          `mapstructure:"PRODUCTION"`
+	TokenSymmetricKet   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 }
 
-func LoadConfig() (*Config, error) {
+func LoadConfig(path string) (config *Config, err error) {
+	viper.SetConfigName(path)
 	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
 
-	_ = viper.ReadInConfig()
-
-	// Validate biến bắt buộc
-	requiredVars := []string{"DATABASE_URL", "PRODUCTION"}
-
-	for _, key := range requiredVars {
-		if !viper.IsSet(key) {
-			return nil, fmt.Errorf("missing required env variable: %s", key)
-		}
+	err = viper.ReadInConfig()
+	if err != nil {
+		return
 	}
 
-	return &Config{
-		DatabaseURL: viper.GetString("DATABASE_URL"),
-		Production:  viper.GetBool("PRODUCTION"),
-	}, nil
+	err = viper.Unmarshal(&config)
+	return
 }

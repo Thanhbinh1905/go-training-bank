@@ -22,11 +22,21 @@ tasks:
     desc: Migrate database
     cmds:
       - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose up
+
+  db:migrate1:
+    desc: Migrate database
+    cmds:
+      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose up 1
   
   db:rollback:
     desc: Rollback database
     cmds:
       - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose down
+
+  db:rollback1:
+    desc: Rollback database
+    cmds:
+      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose down 1
   
   db:psql:
     desc: Open psql prompt

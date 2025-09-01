@@ -10,6 +10,21 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+  backend:
+    build:
+      context: .
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    environment:
+      POSTGRES_URL: postgresql://postgres:secret@simple_bank_db:5432/simple_bank?sslmode=disable
+      PRODUCTION: ${PRODUCTION}
+      TOKEN_SYMMETRIC_KEY: ${TOKEN_SYMMETRIC_KEY}
+      ACCESS_TOKEN_DURATION: ${ACCESS_TOKEN_DURATION}
 
 volumes:
   db_data: 

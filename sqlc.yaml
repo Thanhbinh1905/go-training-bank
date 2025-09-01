@@ -4,6 +4,13 @@ cloud:
     project: ""
     hostname: ""
 servers: []
+overrides:
+  go:
+    overrides:
+      - db_type: "timestamptz"
+        go_type: "time.Time"
+      - db_type: "timestamptz"
+        go_type: "*time.Time"
 sql: 
 -   engine: "postgresql"
     schema: "./internal/db/migration/"

@@ -8,9 +8,9 @@ import (
 	"github.com/Thanhbinh1905/go-training-bank/internal/dto"
 )
 
-func (s *service) CreateAccount(ctx context.Context, req *dto.CreateAccountRequest) (*db.Account, error) {
+func (s *service) CreateAccount(ctx context.Context, username string, req *dto.CreateAccountRequest) (*db.Account, error) {
 	resp, err := s.store.CreateAccount(ctx, db.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    username,
 		Balance:  0,
 		Currency: req.Currency,
 	})
@@ -30,9 +30,10 @@ func (s *service) GetAccount(ctx context.Context, req *dto.GetAccountRequest) (*
 	return &account, nil
 }
 
-func (s *service) ListAccounts(ctx context.Context, req *dto.ListAccountsRequest) ([]db.Account, error) {
+func (s *service) ListAccounts(ctx context.Context, owner string, req *dto.ListAccountsRequest) ([]db.Account, error) {
 
 	accounts, err := s.store.ListAccounts(ctx, db.ListAccountsParams{
+		Owner:  owner,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	})
