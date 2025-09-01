@@ -7,22 +7,27 @@ import (
 )
 
 type Config struct {
-	DatabaseURL         string        `mapstructure:"POSTGRES_URL"`
+	DatabaseURL         string        `mapstructure:"DB_SOURCE"`
 	Production          bool          `mapstructure:"PRODUCTION"`
-	TokenSymmetricKet   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	TokenSymmetricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 }
 
-func LoadConfig(path string) (config *Config, err error) {
-	viper.SetConfigName(path)
-	viper.SetConfigFile(".env")
+func LoadConfig(path string) (*Config, error) {
+	var config Config
+
+	viper.AddConfigPath(path)
+	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
 	}
 
-	err = viper.Unmarshal(&config)
-	return
+	if err := viper.Unmarshal(&config); err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }
