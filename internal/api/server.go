@@ -19,7 +19,7 @@ type Server struct {
 }
 
 func NewServer(cfg config.Config, service service.Service) (*Server, error) {
-	tokenMaker, err := token.NewPasetoMaker(cfg.TokenSymmetricKet)
+	tokenMaker, err := token.NewPasetoMaker(cfg.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
