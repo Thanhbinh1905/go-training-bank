@@ -11,37 +11,37 @@ tasks:
   db:create:
     desc: Create new database
     cmds:
-      - docker exec -it simple_bank_db createdb --username={{.POSTGRES_URL}} simple_bank
+      - docker exec -it simple_bank_db createdb --username={{.DB_SOURCE}} simple_bank
 
   db:drop:
     desc: Create new database
     cmds:
-      - docker exec -it simple_bank_db dropdb --username={{.POSTGRES_URL}} simple_bank
+      - docker exec -it simple_bank_db dropdb --username={{.DB_SOURCE}} simple_bank
 
   db:migrate:
     desc: Migrate database
     cmds:
-      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose up
+      - migrate -path internal/db/migration -database "postgresql://postgres:f5aEcbyQai1kvG2rJtMp@simplebank.cnwuq8ksw0fk.ap-southeast-2.rds.amazonaws.com:5432/simple_bank" -verbose up
 
   db:migrate1:
     desc: Migrate database
     cmds:
-      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose up 1
+      - migrate -path internal/db/migration -database "{{.DB_SOURCE}}" -verbose up 1
   
   db:rollback:
     desc: Rollback database
     cmds:
-      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose down
+      - migrate -path internal/db/migration -database "{{.DB_SOURCE}}" -verbose down
 
   db:rollback1:
     desc: Rollback database
     cmds:
-      - migrate -path internal/db/migration -database "{{.POSTGRES_URL}}" -verbose down 1
+      - migrate -path internal/db/migration -database "{{.DB_SOURCE}}" -verbose down 1
   
   db:psql:
     desc: Open psql prompt
     cmds:
-      - docker exec -it simple_bank_db psql -U {{.POSTGRES_URL}} -d simple_bank
+      - docker exec -it simple_bank_db psql -U {{.DB_SOURCE}} -d simple_bank
 
   sqlc:generate:
     desc: Generate sqlc code
