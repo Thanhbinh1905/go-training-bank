@@ -20,7 +20,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ap-southeast-2
+          aws-region: us-east-1
 
       - name: Check AWS identity
         run: aws sts get-caller-identity
