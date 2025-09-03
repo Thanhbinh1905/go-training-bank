@@ -1,0 +1,12 @@
+# kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    # Map host:8080 -> nodePort 30080 để bạn truy cập từ Windows/host
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 8080
+        listenAddress: "0.0.0.0"
+        protocol: TCP
+  - role: worker

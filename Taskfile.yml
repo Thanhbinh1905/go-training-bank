@@ -53,7 +53,53 @@ tasks:
     cmds:
       - go test -v -cover ./...
 
+  server:
+    desc: Loading .env and starting app...
+    cmds: 
+      - echo $DB_SOURCE
+      - go run cmd/main.go
+# docker run -it -p 8080:8080 \
+#   -e DB_SOURCE="postgresql://postgres:secret@host.docker.internal:5432/simple_bank?sslmode=disable" \
+#   -e TOKEN_SYMMETRIC_KEY="36e831891ef8e5a871991d685ba8567a" \
+#   -e ACCESS_TOKEN_DURATION="60m" \
+#   simplebank:local
   mock:
     desc: Generate mock code
     cmds:
       - mockgen -destination internal/db/mock/store.go -package mockdb github.com/Thanhbinh1905/go-training-bank/internal/db/sqlc Store
+
+  build:
+    desc: Build Docker image for simplebank
+    cmds:
+      - docker build -t simplebank:local .
+
+  kind-load:
+    desc: Load local Docker image into kind cluster
+    cmds:
+      - kind load docker-image simplebank:local --name sb-local
+
+  k8s-apply:
+    desc: Apply Kubernetes manifests
+    cmds:
+      - kubectl apply -f k8s/db-secret.yaml -n simplebank
+      - kubectl apply -f k8s/postgres.yml -n simplebank
+
+  k8s-restart:
+    desc: Restart simplebank deployment
+    cmds:
+      - kubectl rollout restart deployment simplebank -n simplebank
+      - kubectl rollout status deployment simplebank -n simplebank
+      
+  server:k8s:down:
+    desc: Take down simplebank app
+    cmds:
+      - kubectl scale deployment simplebank -n simplebank --replicas=0
+  server:k8s:up:
+    desc: start simplebank app
+    cmds:
+      - kubectl scale deployment simplebank -n simplebank --replicas=1
+
+  logs:
+    desc: Tail logs of simplebank pod
+    cmds:
+      - kubectl logs -f deployment/simplebank -n simplebank

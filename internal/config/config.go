@@ -1,35 +1,31 @@
 package config
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	DatabaseURL         string        `mapstructure:"DB_SOURCE"`
+	DBSource            string        `mapstructure:"DB_SOURCE"`
 	TokenSymmetricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 	Production          bool
 }
 
-func LoadConfig(path string) (*Config, error) {
-	var config Config
-
-	viper.AddConfigPath(path)
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
+func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 
-	config.Production = false
-
-	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+	config := &Config{
+		DBSource:            viper.GetString("DB_SOURCE"),
+		TokenSymmetricKey:   viper.GetString("TOKEN_SYMMETRIC_KEY"),
+		AccessTokenDuration: viper.GetDuration("ACCESS_TOKEN_DURATION"),
 	}
 
-	if err := viper.Unmarshal(&config); err != nil {
-		return nil, err
+	if config.DBSource == "" {
+		return nil, fmt.Errorf("DB_SOURCE not set")
 	}
 
-	return &config, nil
+	return config, nil
 }

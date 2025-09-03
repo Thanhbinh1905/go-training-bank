@@ -15,7 +15,7 @@ func Run(cfg *config.Config) {
 	log := logger.InitLogger("go-training-bank", "logs/.log")
 	defer log.Sync()
 
-	pool, err := db.Connect(context.Background(), cfg.DatabaseURL, log)
+	pool, err := db.Connect(context.Background(), cfg.DBSource, log)
 	if err != nil {
 		log.Panic("Cannot connect to DB", zap.Error(err))
 	}

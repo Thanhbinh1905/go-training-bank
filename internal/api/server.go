@@ -39,6 +39,12 @@ func NewServer(cfg config.Config, service service.Service) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "ok",
+		})
+	})
+
 	router.POST("/users", server.CreateUser)
 	router.POST("/users/login", server.Login)
 

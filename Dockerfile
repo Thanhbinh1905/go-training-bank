@@ -10,12 +10,10 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate ./migrate
-COPY .env .
 COPY start.sh .
 COPY wait-for.sh .
 COPY internal/db/migration ./migration
 
 EXPOSE 8080
-CMD ["/app/main"]
-ENTRYPOINT [ "/app/start.sh" ]
-
+ENTRYPOINT [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+CMD [ "/app/main" ]
